@@ -301,6 +301,220 @@ searchForm.addEventListener(
 // GET WEATHER BY CITY / VILLAGE / LOCALITY
 // =====================================================
 
+// async function getWeather(place) {
+
+//     if (API_KEY === "YOUR_API_KEY") {
+
+//         showError(
+//             "Please add your OpenWeatherMap API key in script.js"
+//         );
+
+//         return;
+//     }
+
+//     showLoading();
+
+//     hideError();
+
+//     try {
+
+//         // -------------------------------------------------
+//         // LOCATION SEARCH
+//         // -------------------------------------------------
+
+//         const geoResponse =
+//             await fetch(
+//                 `${GEO_URL}?q=${encodeURIComponent(
+//                     place
+//                 )}&limit=5&appid=${API_KEY}`
+//             );
+
+//         if (!geoResponse.ok) {
+
+//             throw new Error(
+//                 "Unable to search this location."
+//             );
+//         }
+
+//         const locations =
+//             await geoResponse.json();
+
+//         if (
+//             !locations ||
+//             locations.length === 0
+//         ) {
+
+//             throw new Error(
+//                 "Location not found. Try another city, village or locality."
+//             );
+//         }
+
+//         // First matching location
+//         const selectedLocation =
+//             locations[0];
+
+//         const latitude =
+//             selectedLocation.lat;
+
+//         const longitude =
+//             selectedLocation.lon;
+
+//         // -------------------------------------------------
+//         // CURRENT WEATHER
+//         // -------------------------------------------------
+
+//         const weatherResponse =
+//             await fetch(
+//                 `${WEATHER_URL}?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`
+//             );
+
+//         if (!weatherResponse.ok) {
+
+//             throw new Error(
+//                 "Unable to load current weather."
+//             );
+//         }
+
+//         const weatherData =
+//             await weatherResponse.json();
+
+//         // -------------------------------------------------
+//         // OPEN-METEO 7 DAY FORECAST
+//         // -------------------------------------------------
+
+//         const forecastData =
+//             await getSevenDayForecast(
+//                 latitude,
+//                 longitude
+//             );
+
+//         // -------------------------------------------------
+//         // DISPLAY
+//         // -------------------------------------------------
+
+//         displayWeather(
+//             weatherData,
+//             forecastData
+//         );
+
+//         cityInput.value = "";
+
+//     } catch (error) {
+
+//         console.error(
+//             "Weather Error:",
+//             error
+//         );
+
+//         showError(
+//             error.message ||
+//             "Something went wrong. Please try again."
+//         );
+
+//     } finally {
+
+//         hideLoading();
+
+//     }
+// }
+// =====================================================
+// LOCATION SEARCH - CITY / VILLAGE / LOCALITY
+// =====================================================
+
+async function findLocation(place) {
+
+    // First try OpenWeather
+    try {
+
+        const response = await fetch(
+            `${GEO_URL}?q=${encodeURIComponent(place)}&limit=5&appid=${API_KEY}`
+        );
+
+        if (response.ok) {
+
+            const locations = await response.json();
+
+            if (locations && locations.length > 0) {
+
+                return {
+                    latitude: locations[0].lat,
+                    longitude: locations[0].lon,
+                    name: locations[0].name,
+                    country: locations[0].country,
+                    state: locations[0].state || ""
+                };
+
+            }
+
+        }
+
+    } catch (error) {
+
+        console.log(
+            "OpenWeather location search failed."
+        );
+
+    }
+
+
+    // -------------------------------------------------
+    // FALLBACK: OPEN-METEO GEOCODING
+    // -------------------------------------------------
+
+    try {
+
+        const response = await fetch(
+            `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(place)}&count=10&language=en&format=json`
+        );
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Geocoding failed"
+            );
+
+        }
+
+        const data = await response.json();
+
+        if (
+            data.results &&
+            data.results.length > 0
+        ) {
+
+            const result = data.results[0];
+
+            return {
+                latitude: result.latitude,
+                longitude: result.longitude,
+                name: result.name,
+                country: result.country_code,
+                state: result.admin1 || ""
+            };
+
+        }
+
+    } catch (error) {
+
+        console.log(
+            "Open-Meteo location search failed.",
+            error
+        );
+
+    }
+
+
+    // Nothing found
+
+    return null;
+
+}
+
+
+// =====================================================
+// GET WEATHER - CITY / VILLAGE / LOCALITY
+// =====================================================
+
 async function getWeather(place) {
 
     if (API_KEY === "YOUR_API_KEY") {
@@ -312,52 +526,37 @@ async function getWeather(place) {
         return;
     }
 
+
     showLoading();
 
     hideError();
 
+
     try {
 
         // -------------------------------------------------
-        // LOCATION SEARCH
+        // FIND LOCATION
         // -------------------------------------------------
 
-        const geoResponse =
-            await fetch(
-                `${GEO_URL}?q=${encodeURIComponent(
-                    place
-                )}&limit=5&appid=${API_KEY}`
-            );
+        const location =
+            await findLocation(place);
 
-        if (!geoResponse.ok) {
+
+        if (!location) {
 
             throw new Error(
-                "Unable to search this location."
+                `Location "${place}" was not found. Please check the spelling or try the nearby city name.`
             );
+
         }
 
-        const locations =
-            await geoResponse.json();
-
-        if (
-            !locations ||
-            locations.length === 0
-        ) {
-
-            throw new Error(
-                "Location not found. Try another city, village or locality."
-            );
-        }
-
-        // First matching location
-        const selectedLocation =
-            locations[0];
 
         const latitude =
-            selectedLocation.lat;
+            location.latitude;
 
         const longitude =
-            selectedLocation.lon;
+            location.longitude;
+
 
         // -------------------------------------------------
         // CURRENT WEATHER
@@ -368,18 +567,22 @@ async function getWeather(place) {
                 `${WEATHER_URL}?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`
             );
 
+
         if (!weatherResponse.ok) {
 
             throw new Error(
                 "Unable to load current weather."
             );
+
         }
+
 
         const weatherData =
             await weatherResponse.json();
 
+
         // -------------------------------------------------
-        // OPEN-METEO 7 DAY FORECAST
+        // 7 DAY FORECAST
         // -------------------------------------------------
 
         const forecastData =
@@ -387,6 +590,7 @@ async function getWeather(place) {
                 latitude,
                 longitude
             );
+
 
         // -------------------------------------------------
         // DISPLAY
@@ -397,7 +601,24 @@ async function getWeather(place) {
             forecastData
         );
 
+
+        // Update city name for village/locality
+        const cityName =
+            document.getElementById(
+                "cityName"
+            );
+
+
+        if (cityName) {
+
+            cityName.textContent =
+                `${location.name}${location.state ? ", " + location.state : ""}`;
+
+        }
+
+
         cityInput.value = "";
+
 
     } catch (error) {
 
@@ -406,18 +627,20 @@ async function getWeather(place) {
             error
         );
 
+
         showError(
             error.message ||
-            "Something went wrong. Please try again."
+            "Unable to load weather."
         );
+
 
     } finally {
 
         hideLoading();
 
     }
-}
 
+}
 
 // =====================================================
 // GET WEATHER BY GPS
