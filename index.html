@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Weatherly - Weather App</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- Background -->
+    <div class="background">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <main class="container">
+
+        <!-- HEADER -->
+        <header class="header">
+
+            <div class="logo">
+                <div class="logo-icon">☁️</div>
+
+                <div>
+                    <h1>Weatherly</h1>
+                    <p>Weather made simple</p>
+                </div>
+            </div>
+
+            <div class="header-actions">
+                <button id="locationBtn" class="icon-btn" title="Use my location">
+                    📍
+                </button>
+
+                <button id="themeBtn" class="icon-btn" title="Change theme">
+                    🌙
+                </button>
+            </div>
+
+        </header>
+
+
+        <!-- SEARCH -->
+        <section class="search-section">
+
+            <form id="searchForm" class="search-box">
+
+                <span class="search-icon">🔍</span>
+
+                <input
+                    type="text"
+                    id="cityInput"
+                    placeholder="Search city..."
+                    autocomplete="off"
+                >
+
+                <button type="submit">
+                    Search
+                </button>
+
+            </form>
+
+            <p id="errorMessage" class="error-message"></p>
+
+        </section>
+
+
+        <!-- LOADING -->
+        <div id="loading" class="loading hidden">
+            <div class="spinner"></div>
+            <p>Getting weather data...</p>
+        </div>
+
+
+        <!-- WEATHER APP -->
+        <section id="weatherContent" class="weather-content">
+
+            <!-- CURRENT WEATHER -->
+            <div class="current-weather glass-card">
+
+                <div class="current-top">
+
+                    <div class="location-info">
+
+                        <span class="small-label">
+                            CURRENT WEATHER
+                        </span>
+
+                        <h2 id="cityName">
+                            New Delhi
+                        </h2>
+
+                        <p id="date">
+                            Today, September 5
+                        </p>
+
+                    </div>
+
+                    <div class="weather-icon" id="weatherIcon">
+                        ☀️
+                    </div>
+
+                </div>
+
+
+                <div class="temperature-area">
+
+                    <div class="temperature">
+                        <span id="temperature">28</span>
+                        <sup>°C</sup>
+                    </div>
+
+                    <div class="weather-description">
+
+                        <h3 id="weatherDescription">
+                            Clear Sky
+                        </h3>
+
+                        <p>
+                            Feels like
+                            <span id="feelsLike">30</span>°C
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="weather-extra">
+
+                    <div>
+                        <span>🌡️</span>
+                        <p>Min</p>
+                        <strong id="minTemp">24°C</strong>
+                    </div>
+
+                    <div>
+                        <span>🌡️</span>
+                        <p>Max</p>
+                        <strong id="maxTemp">32°C</strong>
+                    </div>
+
+                    <div>
+                        <span>💧</span>
+                        <p>Humidity</p>
+                        <strong id="humidity">65%</strong>
+                    </div>
+
+                    <div>
+                        <span>💨</span>
+                        <p>Wind</p>
+                        <strong id="windSpeed">12 km/h</strong>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- HOURLY FORECAST -->
+            <div class="section-heading">
+
+                <div>
+                    <span>FORECAST</span>
+                    <h2>Hourly Forecast</h2>
+                </div>
+
+            </div>
+
+            <div class="hourly-container" id="hourlyForecast">
+
+                <div class="hour-card active">
+                    <p>Now</p>
+                    <span>☀️</span>
+                    <strong>28°</strong>
+                </div>
+
+                <div class="hour-card">
+                    <p>14:00</p>
+                    <span>☀️</span>
+                    <strong>29°</strong>
+                </div>
+
+                <div class="hour-card">
+                    <p>15:00</p>
+                    <span>🌤️</span>
+                    <strong>30°</strong>
+                </div>
+
+                <div class="hour-card">
+                    <p>16:00</p>
+                    <span>🌤️</span>
+                    <strong>30°</strong>
+                </div>
+
+                <div class="hour-card">
+                    <p>17:00</p>
+                    <span>🌥️</span>
+                    <strong>29°</strong>
+                </div>
+
+                <div class="hour-card">
+                    <p>18:00</p>
+                    <span>🌙</span>
+                    <strong>27°</strong>
+                </div>
+
+            </div>
+
+
+            <!-- WEATHER DETAILS -->
+            <div class="section-heading">
+
+                <div>
+                    <span>DETAILS</span>
+                    <h2>Today's Weather</h2>
+                </div>
+
+            </div>
+
+
+            <div class="details-grid">
+
+                <div class="detail-card glass-card">
+                    <div class="detail-icon">💧</div>
+                    <div>
+                        <p>Humidity</p>
+                        <h3 id="humidityDetail">65%</h3>
+                    </div>
+                </div>
+
+                <div class="detail-card glass-card">
+                    <div class="detail-icon">💨</div>
+                    <div>
+                        <p>Wind Speed</p>
+                        <h3 id="windDetail">12 km/h</h3>
+                    </div>
+                </div>
+
+                <div class="detail-card glass-card">
+                    <div class="detail-icon">🌡️</div>
+                    <div>
+                        <p>Pressure</p>
+                        <h3 id="pressure">1012 hPa</h3>
+                    </div>
+                </div>
+
+                <div class="detail-card glass-card">
+                    <div class="detail-icon">👁️</div>
+                    <div>
+                        <p>Visibility</p>
+                        <h3 id="visibility">10 km</h3>
+                    </div>
+                </div>
+
+                <div class="detail-card glass-card">
+                    <div class="detail-icon">☀️</div>
+                    <div>
+                        <p>UV Index</p>
+                        <h3 id="uvIndex">5</h3>
+                    </div>
+                </div>
+
+                <div class="detail-card glass-card">
+                    <div class="detail-icon">🌧️</div>
+                    <div>
+                        <p>Rain Chance</p>
+                        <h3 id="rainChance">10%</h3>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- 5 DAY FORECAST -->
+            <div class="section-heading">
+
+                <div>
+                    <span>UPCOMING</span>
+                    <h2>5-Day Forecast</h2>
+                </div>
+
+            </div>
+
+
+            <div class="forecast-container" id="fiveDayForecast">
+
+                <div class="forecast-card">
+
+                    <div>
+                        <strong>Today</strong>
+                        <p>Sep 5</p>
+                    </div>
+
+                    <span class="forecast-icon">☀️</span>
+
+                    <div class="forecast-temp">
+                        <strong>32°</strong>
+                        <span>24°</span>
+                    </div>
+
+                </div>
+
+
+                <div class="forecast-card">
+
+                    <div>
+                        <strong>Sun</strong>
+                        <p>Sep 6</p>
+                    </div>
+
+                    <span class="forecast-icon">🌤️</span>
+
+                    <div class="forecast-temp">
+                        <strong>31°</strong>
+                        <span>23°</span>
+                    </div>
+
+                </div>
+
+
+                <div class="forecast-card">
+
+                    <div>
+                        <strong>Mon</strong>
+                        <p>Sep 7</p>
+                    </div>
+
+                    <span class="forecast-icon">🌧️</span>
+
+                    <div class="forecast-temp">
+                        <strong>29°</strong>
+                        <span>22°</span>
+                    </div>
+
+                </div>
+
+
+                <div class="forecast-card">
+
+                    <div>
+                        <strong>Tue</strong>
+                        <p>Sep 8</p>
+                    </div>
+
+                    <span class="forecast-icon">🌦️</span>
+
+                    <div class="forecast-temp">
+                        <strong>30°</strong>
+                        <span>23°</span>
+                    </div>
+
+                </div>
+
+
+                <div class="forecast-card">
+
+                    <div>
+                        <strong>Wed</strong>
+                        <p>Sep 9</p>
+                    </div>
+
+                    <span class="forecast-icon">☀️</span>
+
+                    <div class="forecast-temp">
+                        <strong>33°</strong>
+                        <span>25°</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- SUN -->
+            <div class="sun-card glass-card">
+
+                <div class="sun-item">
+
+                    <div class="sun-icon">
+                        🌅
+                    </div>
+
+                    <div>
+                        <p>Sunrise</p>
+                        <h3 id="sunrise">5:55 AM</h3>
+                    </div>
+
+                </div>
+
+
+                <div class="sun-progress">
+
+                    <div class="sun-line">
+                        <div class="sun-dot"></div>
+                    </div>
+
+                    <span>☀️</span>
+
+                </div>
+
+
+                <div class="sun-item">
+
+                    <div class="sun-icon">
+                        🌇
+                    </div>
+
+                    <div>
+                        <p>Sunset</p>
+                        <h3 id="sunset">6:30 PM</h3>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- FOOTER -->
+        <footer>
+
+            <p>
+                Weatherly © 2026
+            </p>
+
+            <span>
+                Built with HTML • CSS • JavaScript
+            </span>
+
+        </footer>
+
+    </main>
+
+
+    <script src="script.js"></script>
+
+</body>
+</html>
