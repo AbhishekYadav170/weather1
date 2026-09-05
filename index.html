@@ -5,6 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <meta name="description"
+        content="Weatherly - Beautiful real-time weather forecast, hourly forecast, 7-day forecast and air quality.">
+
+    <meta name="theme-color" content="#0f172a">
+
     <title>Weatherly - Weather App</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,20 +17,23 @@
 
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet"
-    >
+        rel="stylesheet">
 
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <!-- Background -->
+    <!-- ================= BACKGROUND ================= -->
+
     <div class="background">
         <div class="blob blob-1"></div>
         <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
     </div>
 
+
+    <!-- ================= APP ================= -->
 
     <main class="container">
 
@@ -36,7 +44,7 @@
             <div class="logo">
 
                 <div class="logo-icon">
-                    ☁️
+                    🌤️
                 </div>
 
                 <div>
@@ -52,18 +60,18 @@
                 <button
                     id="locationBtn"
                     class="icon-btn"
-                    title="Use my location"
                     type="button"
-                >
+                    title="Use my current location"
+                    aria-label="Use my current location">
                     📍
                 </button>
 
                 <button
                     id="themeBtn"
                     class="icon-btn"
-                    title="Change theme"
                     type="button"
-                >
+                    title="Change theme"
+                    aria-label="Change theme">
                     🌙
                 </button>
 
@@ -78,8 +86,7 @@
 
             <form
                 id="searchForm"
-                class="search-box"
-            >
+                class="search-box">
 
                 <span class="search-icon">
                     🔍
@@ -90,51 +97,126 @@
                     id="cityInput"
                     placeholder="Search city, village or locality..."
                     autocomplete="off"
-                >
+                    spellcheck="false">
 
                 <button
-                    type="submit"
-                >
+                    type="submit">
                     Search
                 </button>
 
             </form>
 
 
+            <div class="search-tools">
+
+                <button
+                    id="refreshBtn"
+                    class="tool-btn"
+                    type="button">
+
+                    ↻
+                    <span>Refresh</span>
+
+                </button>
+
+
+                <button
+                    id="unitBtn"
+                    class="tool-btn"
+                    type="button">
+
+                    °C
+
+                </button>
+
+
+                <button
+                    id="favoritesBtn"
+                    class="tool-btn"
+                    type="button">
+
+                    ★
+                    <span>Favorites</span>
+
+                </button>
+
+            </div>
+
+
+            <!-- SEARCH SUGGESTIONS -->
+
+            <div
+                id="searchSuggestions"
+                class="search-suggestions hidden">
+            </div>
+
+
+            <!-- FAVORITES -->
+
+            <div
+                id="favoritesPanel"
+                class="favorites-panel hidden">
+
+                <div class="panel-header">
+
+                    <div>
+                        <span>QUICK ACCESS</span>
+                        <h3>Favorite Locations</h3>
+                    </div>
+
+                    <button
+                        id="closeFavorites"
+                        type="button"
+                        class="panel-close">
+                        ×
+                    </button>
+
+                </div>
+
+
+                <div id="favoritesList">
+                </div>
+
+            </div>
+
+
+            <!-- ERROR -->
+
             <p
                 id="errorMessage"
                 class="error-message"
-            ></p>
+                role="alert"
+                aria-live="polite">
+            </p>
 
         </section>
 
 
         <!-- ================= LOADING ================= -->
 
-        <div
+        <section
             id="loading"
-            class="loading hidden"
-        >
+            class="loading hidden">
 
-            <div class="spinner"></div>
+            <div class="loading-spinner"></div>
 
             <p>
                 Getting weather data...
             </p>
 
-        </div>
+        </section>
 
 
-        <!-- ================= WEATHER CONTENT ================= -->
+        <!-- ================= MAIN WEATHER ================= -->
 
         <section
             id="weatherContent"
-            class="weather-content"
-        >
+            class="weather-content">
+
 
             <!-- ================= CURRENT WEATHER ================= -->
 
-            <div class="current-weather glass-card">
+            <article class="glass-card current-weather">
 
                 <div class="current-top">
 
@@ -144,9 +226,24 @@
                             CURRENT WEATHER
                         </span>
 
-                        <h2 id="cityName">
-                            New Delhi
-                        </h2>
+
+                        <div class="city-title-row">
+
+                            <h2 id="cityName">
+                                New Delhi
+                            </h2>
+
+                            <button
+                                id="favoriteCurrentBtn"
+                                class="favorite-current"
+                                type="button"
+                                title="Add to favorites"
+                                aria-label="Add current location to favorites">
+                                ☆
+                            </button>
+
+                        </div>
+
 
                         <p id="date">
                             Today
@@ -157,9 +254,10 @@
 
                     <div
                         id="weatherIcon"
-                        class="weather-icon"
-                    >
+                        class="weather-icon">
+
                         ☀️
+
                     </div>
 
                 </div>
@@ -183,7 +281,7 @@
                     <div class="weather-description">
 
                         <h3 id="weatherDescription">
-                            Weather
+                            Loading...
                         </h3>
 
                         <p>
@@ -191,7 +289,6 @@
                             <span id="feelsLike">
                                 --
                             </span>
-                            °C
                         </p>
 
                     </div>
@@ -199,388 +296,370 @@
                 </div>
 
 
-                <div class="weather-extra">
+                <!-- MIN MAX -->
+
+                <div class="min-max">
 
                     <div>
-
-                        <span>
-                            🌡️
-                        </span>
-
-                        <p>
-                            Min
-                        </p>
-
-                        <strong id="minTemp">
-                            --°C
-                        </strong>
-
+                        <span>Low</span>
+                        <strong id="minTemp">--</strong>
                     </div>
 
+                    <div class="divider"></div>
 
                     <div>
-
-                        <span>
-                            🌡️
-                        </span>
-
-                        <p>
-                            Max
-                        </p>
-
-                        <strong id="maxTemp">
-                            --°C
-                        </strong>
-
-                    </div>
-
-
-                    <div>
-
-                        <span>
-                            💧
-                        </span>
-
-                        <p>
-                            Humidity
-                        </p>
-
-                        <strong id="humidity">
-                            --%
-                        </strong>
-
-                    </div>
-
-
-                    <div>
-
-                        <span>
-                            💨
-                        </span>
-
-                        <p>
-                            Wind
-                        </p>
-
-                        <strong id="windSpeed">
-                            -- km/h
-                        </strong>
-
+                        <span>High</span>
+                        <strong id="maxTemp">--</strong>
                     </div>
 
                 </div>
 
-            </div>
+            </article>
 
 
             <!-- ================= HOURLY ================= -->
 
-            <div class="section-heading">
+            <article class="glass-card">
 
-                <div>
+                <div class="section-heading">
 
-                    <span>
-                        FORECAST
+                    <div>
+                        <span class="small-label">
+                            HOURLY FORECAST
+                        </span>
+
+                        <h3>
+                            Next 12 Hours
+                        </h3>
+                    </div>
+
+                    <span class="section-icon">
+                        🕐
                     </span>
-
-                    <h2>
-                        Hourly Forecast
-                    </h2>
 
                 </div>
 
-            </div>
 
+                <div
+                    id="hourlyForecast"
+                    class="hourly-forecast">
+                </div>
 
-            <div
-                id="hourlyForecast"
-                class="hourly-container"
-            >
-
-                <!-- JavaScript will generate hourly cards -->
-
-            </div>
+            </article>
 
 
             <!-- ================= DETAILS ================= -->
 
-            <div class="section-heading">
+            <article class="glass-card">
 
-                <div>
+                <div class="section-heading">
 
-                    <span>
-                        DETAILS
+                    <div>
+                        <span class="small-label">
+                            WEATHER DETAILS
+                        </span>
+
+                        <h3>
+                            Today's Conditions
+                        </h3>
+                    </div>
+
+                    <span class="section-icon">
+                        📊
                     </span>
 
-                    <h2>
-                        Today's Weather
-                    </h2>
-
-                </div>
-
-            </div>
-
-
-            <div class="details-grid">
-
-
-                <div
-                    class="detail-card glass-card"
-                    data-detail="humidity"
-                >
-
-                    <div class="detail-icon">
-                        💧
-                    </div>
-
-                    <div>
-
-                        <p>
-                            Humidity
-                        </p>
-
-                        <h3 id="humidityDetail">
-                            --%
-                        </h3>
-
-                    </div>
-
                 </div>
 
 
-                <div
-                    class="detail-card glass-card"
-                    data-detail="wind"
-                >
+                <div class="details-grid">
 
-                    <div class="detail-icon">
-                        💨
+
+                    <div class="detail-card">
+
+                        <div class="detail-icon">
+                            💧
+                        </div>
+
+                        <div>
+                            <span>
+                                Humidity
+                            </span>
+
+                            <strong id="humidity">
+                                --%
+                            </strong>
+                        </div>
+
                     </div>
 
-                    <div>
 
-                        <p>
-                            Wind Speed
-                        </p>
+                    <div class="detail-card">
 
-                        <h3 id="windDetail">
-                            -- km/h
-                        </h3>
+                        <div class="detail-icon">
+                            💨
+                        </div>
+
+                        <div>
+                            <span>
+                                Wind
+                            </span>
+
+                            <strong id="windSpeed">
+                                --
+                            </strong>
+                        </div>
+
+                    </div>
+
+
+                    <div class="detail-card">
+
+                        <div class="detail-icon">
+                            🎯
+                        </div>
+
+                        <div>
+                            <span>
+                                Pressure
+                            </span>
+
+                            <strong id="pressure">
+                                --
+                            </strong>
+                        </div>
+
+                    </div>
+
+
+                    <div class="detail-card">
+
+                        <div class="detail-icon">
+                            👁️
+                        </div>
+
+                        <div>
+                            <span>
+                                Visibility
+                            </span>
+
+                            <strong id="visibility">
+                                --
+                            </strong>
+                        </div>
+
+                    </div>
+
+
+                    <div class="detail-card">
+
+                        <div class="detail-icon">
+                            ☀️
+                        </div>
+
+                        <div>
+                            <span>
+                                UV Index
+                            </span>
+
+                            <strong id="uvIndex">
+                                --
+                            </strong>
+                        </div>
+
+                    </div>
+
+
+                    <div class="detail-card">
+
+                        <div class="detail-icon">
+                            🌧️
+                        </div>
+
+                        <div>
+                            <span>
+                                Rain Chance
+                            </span>
+
+                            <strong id="rainChance">
+                                --
+                            </strong>
+                        </div>
+
+                    </div>
+
+
+                    <div class="detail-card">
+
+                        <div class="detail-icon">
+                            🌿
+                        </div>
+
+                        <div>
+                            <span>
+                                Air Quality
+                            </span>
+
+                            <strong id="aqiValue">
+                                --
+                            </strong>
+                        </div>
+
+                    </div>
+
+
+                    <div class="detail-card">
+
+                        <div class="detail-icon">
+                            🧭
+                        </div>
+
+                        <div>
+                            <span>
+                                Wind Direction
+                            </span>
+
+                            <strong id="windDirection">
+                                --
+                            </strong>
+                        </div>
 
                     </div>
 
                 </div>
 
-
-                <div
-                    class="detail-card glass-card"
-                    data-detail="pressure"
-                >
-
-                    <div class="detail-icon">
-                        🌡️
-                    </div>
-
-                    <div>
-
-                        <p>
-                            Pressure
-                        </p>
-
-                        <h3 id="pressure">
-                            -- hPa
-                        </h3>
-
-                    </div>
-
-                </div>
-
-
-                <div
-                    class="detail-card glass-card"
-                    data-detail="visibility"
-                >
-
-                    <div class="detail-icon">
-                        👁️
-                    </div>
-
-                    <div>
-
-                        <p>
-                            Visibility
-                        </p>
-
-                        <h3 id="visibility">
-                            -- km
-                        </h3>
-
-                    </div>
-
-                </div>
-
-
-                <div
-                    class="detail-card glass-card"
-                    data-detail="uv"
-                >
-
-                    <div class="detail-icon">
-                        ☀️
-                    </div>
-
-                    <div>
-
-                        <p>
-                            UV Index
-                        </p>
-
-                        <h3 id="uvIndex">
-                            --
-                        </h3>
-
-                    </div>
-
-                </div>
-
-
-                <div
-                    class="detail-card glass-card"
-                    data-detail="rain"
-                >
-
-                    <div class="detail-icon">
-                        🌧️
-                    </div>
-
-                    <div>
-
-                        <p>
-                            Rain Chance
-                        </p>
-
-                        <h3 id="rainChance">
-                            --%
-                        </h3>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!-- ================= 7 DAY FORECAST ================= -->
-
-            <div class="section-heading">
-
-                <div>
-
-                    <span>
-                        UPCOMING
-                    </span>
-
-                    <h2>
-                        7-Day Forecast
-                    </h2>
-
-                </div>
-
-            </div>
-
-
-            <div
-                id="sevenDayForecast"
-                class="forecast-container"
-            >
-
-                <!-- JavaScript will generate 7 days -->
-
-            </div>
+            </article>
 
 
             <!-- ================= SUN ================= -->
 
-            <div class="sun-card glass-card">
+            <article class="glass-card sun-card">
 
-
-                <div class="sun-item">
-
-                    <div class="sun-icon">
-                        🌅
-                    </div>
+                <div class="section-heading">
 
                     <div>
+                        <span class="small-label">
+                            SUN
+                        </span>
 
-                        <p>
-                            Sunrise
-                        </p>
-
-                        <h3 id="sunrise">
-                            --
+                        <h3>
+                            Sunrise & Sunset
                         </h3>
-
                     </div>
 
-                </div>
-
-
-                <div class="sun-progress">
-
-                    <div class="sun-line">
-
-                        <div
-                            id="sunDot"
-                            class="sun-dot"
-                        ></div>
-
-                    </div>
-
-                    <span>
-                        ☀️
+                    <span class="section-icon">
+                        🌅
                     </span>
 
                 </div>
 
 
-                <div class="sun-item">
+                <div class="sun-times">
 
-                    <div class="sun-icon">
-                        🌇
+                    <div class="sun-time">
+
+                        <div class="sun-icon">
+                            🌅
+                        </div>
+
+                        <div>
+                            <span>
+                                Sunrise
+                            </span>
+
+                            <strong id="sunrise">
+                                --
+                            </strong>
+                        </div>
+
                     </div>
 
-                    <div>
 
-                        <p>
-                            Sunset
-                        </p>
+                    <div class="sun-track">
 
-                        <h3 id="sunset">
-                            --
-                        </h3>
+                        <div class="sun-line">
+                        </div>
+
+                        <div
+                            id="sunDot"
+                            class="sun-dot">
+                            ☀️
+                        </div>
+
+                    </div>
+
+
+                    <div class="sun-time">
+
+                        <div class="sun-icon">
+                            🌇
+                        </div>
+
+                        <div>
+                            <span>
+                                Sunset
+                            </span>
+
+                            <strong id="sunset">
+                                --
+                            </strong>
+                        </div>
 
                     </div>
 
                 </div>
 
-            </div>
+            </article>
+
+
+            <!-- ================= 7 DAY ================= -->
+
+            <article class="glass-card">
+
+                <div class="section-heading">
+
+                    <div>
+                        <span class="small-label">
+                            EXTENDED FORECAST
+                        </span>
+
+                        <h3>
+                            7-Day Forecast
+                        </h3>
+                    </div>
+
+                    <span class="section-icon">
+                        📅
+                    </span>
+
+                </div>
+
+
+                <div
+                    id="sevenDayForecast"
+                    class="seven-day-forecast">
+                </div>
+
+            </article>
+
+
+            <!-- ================= FOOTER ================= -->
+
+            <footer>
+
+                <p>
+                    Weather data powered by
+                    <strong>Open-Meteo</strong>
+                </p>
+
+                <p>
+                    Weatherly
+                    <span>•</span>
+                    Real-time weather experience
+                </p>
+
+            </footer>
 
         </section>
-
-
-        <!-- ================= FOOTER ================= -->
-
-        <footer>
-
-            <p>
-                Weatherly © 2026
-            </p>
-
-            <span>
-                Built with HTML • CSS • JavaScript
-            </span>
-
-        </footer>
 
     </main>
 
