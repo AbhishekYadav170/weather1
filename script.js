@@ -1385,10 +1385,8 @@ function displayWeather(
 
 }
 
-
-// =====================================================
 // AQI LABEL
-// =====================================================
+
 
 function getAQILabel(
     value
@@ -1572,9 +1570,9 @@ function displayHourlyForecast(
 }
 
 
-// =====================================================
+
 // 7 DAY FORECAST
-// =====================================================
+
 
 function displaySevenDayForecast(
     forecast
@@ -1727,9 +1725,9 @@ function displaySevenDayForecast(
 }
 
 
-// =====================================================
+
 // SUN POSITION
-// =====================================================
+
 
 function updateSunPosition(
     sunrise,
@@ -1793,9 +1791,8 @@ function updateSunPosition(
 }
 
 
-// =====================================================
 // FAVORITES
-// =====================================================
+
 
 function locationKey(
     location
