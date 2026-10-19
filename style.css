@@ -576,7 +576,7 @@ body {
 
     padding: 7px;
 
-    border-radius: 12px;
+    border-radius: 14px;
 
     transition:
         background 0.2s ease;
@@ -598,7 +598,7 @@ body {
 
     gap: 10px;
 
-    padding: 8px;
+    padding: 9px;
 
     border: none;
 
